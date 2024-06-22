@@ -1,0 +1,100 @@
+.event-container {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.event-container p {
+    margin: 0;
+}
+
+.event-container ul {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.event-container li {
+    margin-left: 20px;
+}
+
+.searchBox {
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+}
+
+h1 {
+    text-align:center;
+}
+
+form {
+    text-align: center;
+}
+
+.about-section {
+    text-align: center; /* Center-align the content */
+    padding: 20px; /* Add padding for spacing */
+}
+
+.about-section h1 {
+    font-size: 36px; /* Set the font size for the title */
+    margin-bottom: 10px; /* Add space below the title */
+}
+
+
+.about-section p {
+    font-size: 18px; /* Set the font size for the paragraph */
+    line-height: 1.6; /* Set the line height for better readability */
+    text-align: center; /* Center-align the text within the paragraph */
+    padding-left: 20px; /* Add padding on the left side of the paragraph */
+    padding-right: 20px; /* Add padding on the right side of the paragraph */
+}
+
+.notification{
+    background-color: lightgray;
+    font-size: 22px;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-color: green;
+    color: green;
+}
+
+.errorNotification{
+    background-color: lightgray;
+    font-size: 22px;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-color: red;
+    color: red;
+}
+
+button {
+    background: #5E5DF0;
+    border-radius: 999px;
+    box-shadow: #5E5DF0 0 10px 20px -10px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Inter, Helvetica, "Apple Color Emoji", "Segoe UI Emoji", NotoColorEmoji, "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", EmojiSymbols, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    opacity: 1;
+    outline: 0 solid transparent;
+    padding: 8px 11px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: fit-content;
+    word-break: break-word;
+    border: 0;
+    margin-left: 12px;
+}
