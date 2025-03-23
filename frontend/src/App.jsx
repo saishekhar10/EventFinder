@@ -56,7 +56,7 @@ const App =() => {
             }
             getUserPrivacy();
         }
-    }, [privacy]);
+    }, []); // Remove privacy from dependencies
 
 
     // Get coordinates of the user's location
@@ -216,12 +216,13 @@ const App =() => {
         setFilteredData(filtered);
     };
 
-    const resetFilter = () =>{
+    const resetFilter = () => {
         setSelectedDate(null);
         setArtistFilter('');
         setVenueFilter('');
-
-    }
+        // Reset filtered data back to original event data
+        setFilteredData(eventData);
+    };
 
     // Event handler to update venue search input
     const handleVenueSearchChange = (event) => {
@@ -233,10 +234,16 @@ const App =() => {
         setArtistFilter(event.target.value);
     };
 
-    const handleTogglePrivacy = async () => {
+    const handleTogglePrivacy = async (e) => {
+        e.preventDefault(); // Prevent form submission
         try {
             const updatedUser = await userService.togglePrivacy(user.token);
-            setUser(updatedUser); // Update the user state with the updated user object
+            // Update localStorage with the new user data
+            window.localStorage.setItem(
+                "loggedEventFinderAppUser",
+                JSON.stringify({ ...user, isEventsPublic: !privacy })
+            );
+            setUser({ ...user, isEventsPublic: !privacy }); // Update user state
             setPrivacy(!privacy);
         } catch (error) {
             console.error('Error toggling privacy:', error);
@@ -276,33 +283,49 @@ const App =() => {
 
             {!loading && filteredData && (
                 <div>
-                    <div className="filters">
-                        <input 
-                            type="date" 
-                            value={selectedDate} 
-                            onChange={e => setSelectedDate(new Date(e.target.value))}
-                        />
-                        <input
-                            className="searchBox"
-                            type="text"
-                            placeholder="Search by venue"
-                            value={venueFilter}
-                            onChange={handleVenueSearchChange}
-                        />
-                        <input
-                            className="searchBox"
-                            type="text"
-                            placeholder="Search by artist"
-                            value={artistFilter}
-                            onChange={handleArtistsSearchChange}
-                        />
-                        <button onClick={filterEvents} className="button-34">Search</button>
-                        <button onClick={resetFilter}>Reset Filter</button>
+                    <div className="search-section">
+                        <div className="filters">
+                            <div className="search-input-group">
+                                <label>Date</label>
+                                <input 
+                                    type="date" 
+                                    value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''} 
+                                    onChange={e => setSelectedDate(new Date(e.target.value))}
+                                />
+                            </div>
+                            <div className="search-input-group">
+                                <label>Search by Venue</label>
+                                <input
+                                    className="searchBox"
+                                    type="text"
+                                    placeholder="Enter venue name..."
+                                    value={venueFilter}
+                                    onChange={handleVenueSearchChange}
+                                />
+                            </div>
+                            <div className="search-input-group">
+                                <label>Search by Artist</label>
+                                <input
+                                    className="searchBox"
+                                    type="text"
+                                    placeholder="Enter artist name..."
+                                    value={artistFilter}
+                                    onChange={handleArtistsSearchChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="filter-buttons">
+                            <button onClick={filterEvents} className="button-34">Search</button>
+                            <button onClick={resetFilter}>Reset Filter</button>
+                        </div>
                     </div>
-                    <p>Events around you</p>
-                    {filteredData.map(event => (
-                        <EventData key={event.eventID} data={event} user={user}/>
-                    ))}
+                    
+                    <h2>Events around you</h2>
+                    <div className="events-grid">
+                        {filteredData.map(event => (
+                            <EventData key={event.eventID} data={event} user={user}/>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
@@ -327,17 +350,15 @@ const App =() => {
                     // If the response is undefined or null, set empty array
                     if (!events) {
                         setProfileEvents([]);
-                        return;
+                    } else {
+                        setProfileEvents(events);
                     }
-                    
-                    setProfileEvents(events);
                 } catch (error) {
                     console.error("Error loading profile data:", error);
                     // Don't set error state for new users with no events
                     if (error?.response?.status !== 500) {
                         setError("Failed to load interested events. Please try again later.");
                     }
-                    setProfileEvents([]);
                 } finally {
                     setIsLoading(false);
                 }
@@ -346,7 +367,7 @@ const App =() => {
             setIsLoading(true);
             setError(null);
             loadProfileData();
-        }, [user]); // Remove privacy from dependencies to prevent unnecessary reloads
+        }, [user, privacy]); // Add privacy to dependencies to reload when privacy changes
 
         if (isLoading) {
             return <div className="page-container">Loading profile data...</div>;
