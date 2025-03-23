@@ -1,3 +1,414 @@
+:root {
+    /* Dark theme colors */
+    --bg-primary: #0a0a1f;  /* Deep blue-black background */
+    --bg-secondary: #1a1a3a; /* Rich dark blue */
+    --bg-elevated: #252550;  /* Lighter blue for elevated elements */
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0ff;
+    
+    /* EDM-inspired accent colors */
+    --accent-primary: #ff2a6d;    /* Hot pink */
+    --accent-secondary: #05ffa1;  /* Neon green */
+    --accent-tertiary: #00ffff;   /* Cyan */
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #ff2a6d, #ff9616);
+    --gradient-secondary: linear-gradient(135deg, #05ffa1, #00ffff);
+    --gradient-dark: linear-gradient(135deg, rgba(26, 26, 58, 0.9), rgba(37, 37, 80, 0.9));
+}
+
+/* Global styles */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Animated background pattern */
+.app-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.app-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 48%, rgba(255, 42, 109, 0.05) 50%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(5, 255, 161, 0.05) 50%, transparent 52%);
+    background-size: 4em 4em;
+    z-index: -1;
+    animation: gradientMove 60s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100em 100em;
+    }
+}
+
+/* Top Navigation Bar */
+.navigation {
+    background: var(--bg-elevated);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    margin-bottom: 2rem;
+}
+
+/* Main navigation links */
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+    background: linear-gradient(135deg, rgba(255, 42, 109, 0.1), rgba(255, 150, 22, 0.1));
+    box-shadow: 0 0 20px rgba(255, 42, 109, 0.2);
+}
+
+.nav-links a.active {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 25px rgba(255, 42, 109, 0.3);
+}
+
+/* User controls in navigation */
+.user-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.username-display {
+    color: #000000;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-shadow: none;
+}
+
+.logout-button {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 42, 109, 0.3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.logout-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 42, 109, 0.4);
+}
+
+/* Events/Profile Navigation Tabs */
+.nav-tabs {
+    background: var(--bg-elevated);
+    padding: 0.5rem;
+    border-radius: 12px;
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.nav-tabs a {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs a:hover {
+    color: var(--text-primary);
+    background: linear-gradient(135deg, rgba(255, 42, 109, 0.1), rgba(255, 150, 22, 0.1));
+}
+
+.nav-tabs a.active {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 25px rgba(255, 42, 109, 0.3);
+}
+
+/* Events and Profile links container */
+.main-nav {
+    background: var(--bg-primary);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.main-nav a {
+    color: #a0a0ff;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: var(--accent-tertiary);
+    background: linear-gradient(135deg, rgba(255, 42, 109, 0.1), rgba(255, 150, 22, 0.1));
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+.main-nav a.active {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 0 25px rgba(255, 42, 109, 0.3);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Page Container */
+.page-container {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    margin-top: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Event Container */
+.event-container {
+    background: var(--bg-elevated) !important;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.event-container p, 
+.event-container ul, 
+.event-container li {
+    color: var(--text-secondary) !important;
+    margin: 0.5rem 0;
+    text-shadow: 0 0 10px rgba(224, 224, 255, 0.2);
+}
+
+/* Event details specific styling */
+.event-container strong,
+.event-container b {
+    color: var(--accent-secondary) !important;
+    text-shadow: 0 0 10px rgba(5, 255, 161, 0.3);
+}
+
+.event-container ul li {
+    color: var(--accent-tertiary) !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    margin-left: 20px;
+}
+
+.event-container p:nth-child(4),
+.event-container p:nth-child(5) {
+    color: var(--accent-primary) !important;
+    text-shadow: 0 0 10px rgba(255, 42, 109, 0.3);
+}
+
+.event-container p:last-child {
+    color: var(--text-secondary) !important;
+    opacity: 0.9;
+}
+
+/* Buttons */
+button {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    margin: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 42, 109, 0.3);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 42, 109, 0.4);
+}
+
+button.button-34 {
+    background: var(--gradient-secondary);
+    box-shadow: 0 4px 15px rgba(5, 255, 161, 0.3);
+}
+
+button.button-34:hover {
+    box-shadow: 0 8px 25px rgba(5, 255, 161, 0.4);
+}
+
+/* Search Inputs */
+.searchBox, input[type="date"] {
+    background: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.searchBox::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* Toggle Switch */
+.toggle-switch-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-slider {
+    background: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggle-slider:before {
+    background: var(--text-primary);
+}
+
+input:checked + .toggle-slider {
+    background: var(--gradient-primary);
+}
+
+/* Profile Section */
+.profile-container {
+    display: grid;
+    gap: 2rem;
+    color: var(--text-primary);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-header h2 {
+    color: var(--accent-secondary);
+    text-shadow: 0 0 15px rgba(5, 255, 161, 0.4);
+}
+
+.profile-section {
+    background: var(--bg-elevated);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.profile-section h3 {
+    color: var(--accent-tertiary);
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    margin-bottom: 1.5rem;
+}
+
+.profile-section p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    text-shadow: 0 0 10px rgba(224, 224, 255, 0.2);
+}
+
+/* Animations */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Notifications */
+.notification {
+    background: rgba(5, 255, 161, 0.1) !important;
+    border: 1px solid var(--accent-secondary) !important;
+    color: var(--accent-secondary) !important;
+    font-weight: 500;
+    font-size: 16px !important;
+    border-width: 1px !important;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(5, 255, 161, 0.5);
+}
+
+.errorNotification {
+    background: rgba(255, 42, 109, 0.1) !important;
+    border: 1px solid var(--accent-primary) !important;
+    color: var(--accent-primary) !important;
+    font-weight: 500;
+    font-size: 16px !important;
+    border-width: 1px !important;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 42, 109, 0.5);
+}
+
 .event-container {
     border-radius: 10px;
     padding: 20px;
@@ -25,24 +436,44 @@
     margin: 5px;
 }
 
-h1 {
-    text-align:center;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 form {
     text-align: center;
+    color: var(--text-primary);
+}
+
+form input {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin: 0.5rem;
+}
+
+form input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 .about-section {
     text-align: center; /* Center-align the content */
     padding: 20px; /* Add padding for spacing */
+    color: var(--text-primary);
 }
 
 .about-section h1 {
     font-size: 36px; /* Set the font size for the title */
     margin-bottom: 10px; /* Add space below the title */
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+    text-shadow: 0 0 30px rgba(255, 42, 109, 0.3);
 }
-
 
 .about-section p {
     font-size: 18px; /* Set the font size for the paragraph */
@@ -50,6 +481,8 @@ form {
     text-align: center; /* Center-align the text within the paragraph */
     padding-left: 20px; /* Add padding on the left side of the paragraph */
     padding-right: 20px; /* Add padding on the right side of the paragraph */
+    color: var(--text-secondary);
+    font-size: 1.1rem;
 }
 
 .notification{
@@ -97,4 +530,160 @@ button {
     word-break: break-word;
     border: 0;
     margin-left: 12px;
+}
+
+/* Navigation Styles */
+.navigation {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navigation ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.navigation li {
+  margin: 0;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.navigation a:hover {
+  background-color: #e9ecef;
+  color: #007bff;
+}
+
+.navigation a.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Layout Styles */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+/* User Controls Styles */
+.user-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.user-controls button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-controls button:hover {
+  background-color: #0056b3;
+}
+
+/* Profile Page Styles */
+.profile-container {
+  display: grid;
+  gap: 2rem;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.profile-section {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #007bff;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.toggle-label {
+  font-size: 1rem;
+  color: var(--text-primary) !important;
 }

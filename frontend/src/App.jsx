@@ -8,6 +8,7 @@ import EventData from "./components/EventData.jsx";
 import InterestedEvents from "./components/InterestedEvents.jsx";
 import Notification from "./components/Notification.jsx";
 import ErrorNotificaiton from "./components/ErrorNotificaiton.jsx";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 
 const App =() => {
 
@@ -20,8 +21,6 @@ const App =() => {
     const [password, setPassword] = useState('');
     const [newUsername, setNewUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [interestedEvents, setInterestedEvents] = useState([]);
-    const [showUsersEvents, setShowUsersEvents] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [artistFilter, setArtistFilter] = useState('');
     const [venueFilter, setVenueFilter] = useState('');
@@ -195,25 +194,6 @@ const App =() => {
         }
     }
 
-    const handleToggleEventsClick = async () =>{
-        if(!showUsersEvents){
-            try{
-                setLoading(true);
-                setShowUsersEvents(true);
-                const events = await userService.getEvents(user);
-                console.log(events)
-                setInterestedEvents(events);
-                setLoading(false);
-            } catch (error){
-                console.log("Error fetching interested events",error);
-                setLoading(false);
-            }
-        } else {
-            setInterestedEvents([]);
-            setShowUsersEvents(false);
-        }
-    }
-    
     const filterEvents = () => {
         // Filter by date
         let filtered = eventData;
@@ -260,102 +240,200 @@ const App =() => {
             setPrivacy(!privacy);
         } catch (error) {
             console.error('Error toggling privacy:', error);
+            setErrorNotification("Failed to update privacy settings");
         }
     };
 
-    const loginForm = () =>{
-        return(
-            <div>
-                <Notification message = {notification}/>
-                <ErrorNotificaiton message={errorNotification}/>
-                <div className="about-section">
-                <h1> Event Finder</h1>
-                    <p>This is a website where you can find local concerts around your location, create an account to find events around and see what events other users are interested in! </p>
-                </div>
-                <LoginForm
-                    username={username}
-                    password={password}
-                    handleUsernameChange={({ target }) => setUsername(target.value)}
-                    handlePasswordChange={({ target }) => setPassword(target.value)}
-                    handleSubmit={handleLogin}
-                    newUsername={newUsername}
-                    newPassword={newPassword}
-                    handleNewUsernameChange={({ target }) => setNewUsername(target.value)}
-                    handleNewPasswordChange={({ target }) => setNewPassword(target.value)}
-                    handleCreateUser={handleCreateUser}
-                />
-            </div>
-        )
-    }
-
-    const afterLogin = () =>{
-        return (
-            <div>
+    // Render different content based on authentication
+    const loginView = () => (
+        <div className="page-container">
+            <Notification message={notification}/>
+            <ErrorNotificaiton message={errorNotification}/>
+            <div className="about-section">
                 <h1>Event Finder</h1>
-                <p>{user.username} has logged in</p>
-                <button onClick={handleLogout}>logout</button>
-                <br/>
-                <br/>
-                <button
-                    onClick={handleToggleEventsClick}>{showUsersEvents ? 'Show events around' : 'Show interested events'}</button>
+                <p>This is a website where you can find local concerts around your location, create an account to find events around and see what events other users are interested in! </p>
+            </div>
+            <LoginForm
+                username={username}
+                password={password}
+                handleUsernameChange={({ target }) => setUsername(target.value)}
+                handlePasswordChange={({ target }) => setPassword(target.value)}
+                handleSubmit={handleLogin}
+                newUsername={newUsername}
+                newPassword={newPassword}
+                handleNewUsernameChange={({ target }) => setNewUsername(target.value)}
+                handleNewPasswordChange={({ target }) => setNewPassword(target.value)}
+                handleCreateUser={handleCreateUser}
+            />
+        </div>
+    );
 
-                <button onClick={handleTogglePrivacy}>
-                    {privacy ? 'Make Events Private' : 'Make Events Public'}
-                </button>
-                {loading &&
-                    <p> {showUsersEvents ? 'Loading interested events' : 'Loading events around you...'}</p>
+    const eventsView = () => (
+        <div className="page-container">
+            {loading && (
+                <p>Loading events around you...</p>
+            )}
+
+            {!loading && filteredData && (
+                <div>
+                    <div className="filters">
+                        <input 
+                            type="date" 
+                            value={selectedDate} 
+                            onChange={e => setSelectedDate(new Date(e.target.value))}
+                        />
+                        <input
+                            className="searchBox"
+                            type="text"
+                            placeholder="Search by venue"
+                            value={venueFilter}
+                            onChange={handleVenueSearchChange}
+                        />
+                        <input
+                            className="searchBox"
+                            type="text"
+                            placeholder="Search by artist"
+                            value={artistFilter}
+                            onChange={handleArtistsSearchChange}
+                        />
+                        <button onClick={filterEvents} className="button-34">Search</button>
+                        <button onClick={resetFilter}>Reset Filter</button>
+                    </div>
+                    <p>Events around you</p>
+                    {filteredData.map(event => (
+                        <EventData key={event.eventID} data={event} user={user}/>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+
+    const ProfileView = () => {
+        const [isLoading, setIsLoading] = useState(true);
+        const [profileEvents, setProfileEvents] = useState([]);
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+            const loadProfileData = async () => {
+                if (!user) {
+                    setIsLoading(false);
+                    return;
                 }
-                <br/>
-                {!loading && filteredData && (
-                    <>
-                        {showUsersEvents ? (
-                            <div>
-                                <p>Your Interested Events</p>
-                                {interestedEvents.map(event => (
-                                    <InterestedEvents key={event.eventID} data={event}/>
-                                ))}
-                            </div>
+
+                try {
+                    console.log("Fetching profile events for user:", user.username);
+                    const events = await userService.getEvents(user);
+                    
+                    // If the response is undefined or null, set empty array
+                    if (!events) {
+                        setProfileEvents([]);
+                        return;
+                    }
+                    
+                    setProfileEvents(events);
+                } catch (error) {
+                    console.error("Error loading profile data:", error);
+                    // Don't set error state for new users with no events
+                    if (error?.response?.status !== 500) {
+                        setError("Failed to load interested events. Please try again later.");
+                    }
+                    setProfileEvents([]);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            setIsLoading(true);
+            setError(null);
+            loadProfileData();
+        }, [user]); // Remove privacy from dependencies to prevent unnecessary reloads
+
+        if (isLoading) {
+            return <div className="page-container">Loading profile data...</div>;
+        }
+
+        return (
+            <div className="page-container">
+                <div className="profile-container">
+                    <div className="profile-header">
+                        <h2>Profile</h2>
+                        <div className="toggle-switch-container">
+                            <span className="toggle-label">Event Privacy:</span>
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={privacy}
+                                    onChange={handleTogglePrivacy}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                            <span className="toggle-label">
+                                {privacy ? 'Public' : 'Private'}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="profile-section">
+                        <h3>Your Interested Events</h3>
+                        {error ? (
+                            <div className="error-message">{error}</div>
+                        ) : profileEvents.length === 0 ? (
+                            <p>You have not marked any events as interested yet.</p>
                         ) : (
-                            <div>
-                                <br/>
-                                Date Filter: <br/>
-                                <input type="date" value={selectedDate}
-                                       onChange={e => setSelectedDate(new Date(e.target.value))}/>
-                                <br/>
-                                <div>
-                                    <input className="searchBox"
-                                           type="text"
-                                           placeholder="Search by venue"
-                                           value={venueFilter}
-                                           onChange={handleVenueSearchChange}
-                                    />
-                                    <input className="searchBox"
-                                           type="text"
-                                           placeholder="Search by artist"
-                                           value={artistFilter}
-                                           onChange={handleArtistsSearchChange}
-                                    />
-                                    <button onClick={filterEvents} className="button-34">Search</button>
-                                </div>
-                                <br/>
-                                <button onClick={resetFilter}>Reset Filter</button>
-                                <p>Events around you</p>
-                                {filteredData.map(event => (
-                                    <EventData key={event.eventID} data={event} user={user}/>
-                                ))}
-                            </div>
+                            profileEvents.map(event => (
+                                <InterestedEvents key={event.eventID} data={event}/>
+                            ))
                         )}
-                    </>
-                )}
+                    </div>
+                </div>
             </div>
         );
     };
 
+    const Navigation = () => {
+        const location = useLocation();
+        
+        return (
+            <nav className="navigation">
+                <ul className="nav-links">
+                    <li>
+                        <Link 
+                            to="/events" 
+                            className={location.pathname === '/events' ? 'active' : ''}
+                        >
+                            Events
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            to="/profile" 
+                            className={location.pathname === '/profile' ? 'active' : ''}
+                        >
+                            Profile
+                        </Link>
+                    </li>
+                </ul>
+                <div className="user-nav-controls">
+                    <span className="username-display">Welcome, {user.username}</span>
+                    <button className="logout-button" onClick={handleLogout}>
+                        Logout
+                    </button>
+                </div>
+            </nav>
+        );
+    };
+
     return (
-        <div>
-            {user === null ? loginForm() : afterLogin()}
-        </div>
-    )
+        <Router>
+            <div className="app-container">
+                {user && <Navigation />}
+                <Routes>
+                    <Route path="/" element={user ? <Navigate to="/events" /> : loginView()} />
+                    <Route path="/events" element={user ? eventsView() : <Navigate to="/" />} />
+                    <Route path="/profile" element={user ? <ProfileView /> : <Navigate to="/" />} />
+                </Routes>
+            </div>
+        </Router>
+    );
 }
 
 export default App

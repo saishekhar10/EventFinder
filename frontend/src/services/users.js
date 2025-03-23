@@ -16,7 +16,8 @@ const getEvents = async (user) =>{
         });
         return response.data;
     } catch(error) {
-        console.log("Error fetching interested events",error);
+        console.error("Error fetching interested events:", error);
+        throw error; // Propagate the error so we can handle it in the component
     }
 }
 const togglePrivacy = async (token) => {
